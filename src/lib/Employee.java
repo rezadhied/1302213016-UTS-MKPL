@@ -13,11 +13,7 @@ public class Employee {
 	private String idNumber;
 	private String address;
 	
-	private int yearJoined;
-	private int monthJoined;
-	private int dayJoined;
-	private int monthWorkingInYear;
-	
+	private LocalDate dateJoined;
 	private boolean isForeigner;
 	private boolean gender; //true = Laki-laki, false = Perempuan
 	
@@ -37,9 +33,7 @@ public class Employee {
 		this.lastName = lastName;
 		this.idNumber = idNumber;
 		this.address = address;
-		this.yearJoined = yearJoined;
-		this.monthJoined = monthJoined;
-		this.dayJoined = dayJoined;
+        this.dateJoined = dateJoined;
 		this.isForeigner = isForeigner;
 		this.gender = gender;
 		
