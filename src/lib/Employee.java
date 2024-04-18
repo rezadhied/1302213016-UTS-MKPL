@@ -27,7 +27,7 @@ public class Employee {
 	private List<String> childNames;
 	private List<String> childIdNumbers;
 	
-	public Employee(String employeeId, String firstName, String lastName, String idNumber, String address, int yearJoined, int monthJoined, int dayJoined, boolean isForeigner, boolean gender) {
+	public Employee(String employeeId, String firstName, String lastName, String idNumber, String address, LocalDate dateJoined, boolean isForeigner, boolean gender) {
 		this.employeeId = employeeId;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -41,10 +41,6 @@ public class Employee {
 		childIdNumbers = new LinkedList<String>();
 	}
 	
-	/**
-	 * Fungsi untuk menentukan gaji bulanan pegawai berdasarkan grade kepegawaiannya (grade 1: 3.000.000 per bulan, grade 2: 5.000.000 per bulan, grade 3: 7.000.000 per bulan)
-	 * Jika pegawai adalah warga negara asing gaji bulanan diperbesar sebanyak 50%
-	 */
 	public void setMonthlySalary(int grade) {
 		this.monthlySalary = calculateBaseSalary(grade);
 		if (isForeigner) {
@@ -82,19 +78,13 @@ public class Employee {
 		childNames.add(childName);
 		childIdNumbers.add(childIdNumber);
 	}
-	
-	public int getAnnualIncomeTax() {
-		
-		//Menghitung berapa lama pegawai bekerja dalam setahun ini, jika pegawai sudah bekerja dari tahun sebelumnya maka otomatis dianggap 12 bulan.
-		LocalDate currentDate = LocalDate.now();
-		
-		int monthWorkingInYear;
-        if (currentDate.getYear() == dateJoined.getYear()) {
-            monthWorkingInYear = currentDate.getMonthValue() - dateJoined.getMonthValue();
-        } else {
-            monthWorkingInYear = 12;
-        }
 
-        return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, spouseIdNumber.equals(""), childIdNumbers.size());
+	public int getAnnualIncomeTax() {
+        int monthWorkingInYear = LocalDate.now().getYear() == dateJoined.getYear() ? LocalDate.now().getMonthValue() - dateJoined.getMonthValue() : 12;
+        return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, isSpouseEligibleForDeduction(), childIdNumbers.size());
+    }
+
+    private boolean isSpouseEligibleForDeduction() {
+        return spouseIdNumber.equals("");
     }
 }
