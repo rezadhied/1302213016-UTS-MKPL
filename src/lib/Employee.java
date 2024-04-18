@@ -57,7 +57,7 @@ public class Employee {
 
 	public int getAnnualIncomeTax() {
         int monthWorkingInYear = LocalDate.now().getYear() == dateJoined.getYear() ? LocalDate.now().getMonthValue() - dateJoined.getMonthValue() : 12;
-        return TaxFunction.calculateTax(salary.getMonthlySalary(), salary.getOtherMonthlyIncome(), monthWorkingInYear, salary.getAnnualDeductible(), salary.isSpouseEligibleForDeduction(spouse.getIdNumber()), children.size());
+        return TaxFunction.calculateTax(salary.getMonthlySalary(), salary.getOtherMonthlyIncome(), monthWorkingInYear, salary.getAnnualDeductible(), spouse.getIdNumber(), children.size());
     }
 
 }
