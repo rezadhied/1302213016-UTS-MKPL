@@ -17,74 +17,47 @@ public class Employee {
 	private boolean isForeigner;
 	private boolean gender; //true = Laki-laki, false = Perempuan
 	
-	private int monthlySalary;
-	private int otherMonthlyIncome;
-	private int annualDeductible;
-	
-	private String spouseName;
-	private String spouseIdNumber;
+	private Salary salary;
+    private FamilyMember spouse;
+    private List<FamilyMember> children;
 
-	private List<String> childNames;
-	private List<String> childIdNumbers;
-	
-	public Employee(String employeeId, String firstName, String lastName, String idNumber, String address, LocalDate dateJoined, boolean isForeigner, boolean gender) {
-		this.employeeId = employeeId;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.idNumber = idNumber;
-		this.address = address;
+    public Employee(String employeeId, String firstName, String lastName, String idNumber, String address, LocalDate dateJoined, boolean isForeigner, Gender gender) {
+        this.employeeId = employeeId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.idNumber = idNumber;
+        this.address = address;
         this.dateJoined = dateJoined;
-		this.isForeigner = isForeigner;
-		this.gender = gender;
-		
-		childNames = new LinkedList<String>();
-		childIdNumbers = new LinkedList<String>();
-	}
-	
-	public void setMonthlySalary(int grade) {
-		this.monthlySalary = calculateBaseSalary(grade);
-		if (isForeigner) {
-		  this.monthlySalary *= 1.5;
-		}
-	}
-	  
-	private int calculateBaseSalary(int grade) {
-	switch (grade) {
-		case 1:
-		return 3000000;
-		case 2:
-		return 5000000;
-		case 3:
-		return 7000000;
-		default:
-		throw new IllegalArgumentException("Invalid grade");
-		}
-	}
-	
-	public void setAnnualDeductible(int deductible) {	
-		this.annualDeductible = deductible;
-	}
-	
-	public void setAdditionalIncome(int income) {	
-		this.otherMonthlyIncome = income;
-	}
-	
-	public void setSpouse(String spouseName, String spouseIdNumber) {
-		this.spouseName = spouseName;
-		this.spouseIdNumber = idNumber;
-	}
-	
-	public void addChild(String childName, String childIdNumber) {
-		childNames.add(childName);
-		childIdNumbers.add(childIdNumber);
-	}
+        this.isForeigner = isForeigner;
+        this.gender = gender;
+
+        children = new LinkedList<>();
+        salary = new Salary(isForeigner);
+    }
+
+    public void setMonthlySalary(int grade) {
+        salary.setMonthlySalary(grade);
+    }
+
+    public void setAnnualDeductible(int deductible) {
+        salary.setAnnualDeductible(deductible);
+    }
+
+    public void setAdditionalIncome(int income) {
+        salary.setAdditionalIncome(income);
+    }
+
+    public void setSpouse(String spouseName, String spouseIdNumber) {
+        spouse = new FamilyMember(spouseName, spouseIdNumber);
+    }
+
+    public void addChild(String childName, String childIdNumber) {
+        children.add(new FamilyMember(childName, childIdNumber));
+    }
 
 	public int getAnnualIncomeTax() {
         int monthWorkingInYear = LocalDate.now().getYear() == dateJoined.getYear() ? LocalDate.now().getMonthValue() - dateJoined.getMonthValue() : 12;
-        return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, isSpouseEligibleForDeduction(), childIdNumbers.size());
+        return TaxFunction.calculateTax(salary.getMonthlySalary(), salary.getOtherMonthlyIncome(), monthWorkingInYear, salary.getAnnualDeductible(), salary.isSpouseEligibleForDeduction(spouse.getIdNumber()), children.size());
     }
 
-    private boolean isSpouseEligibleForDeduction() {
-        return spouseIdNumber.equals("");
-    }
 }
