@@ -82,19 +82,13 @@ public class Employee {
 		childNames.add(childName);
 		childIdNumbers.add(childIdNumber);
 	}
-	
-	public int getAnnualIncomeTax() {
-		
-		//Menghitung berapa lama pegawai bekerja dalam setahun ini, jika pegawai sudah bekerja dari tahun sebelumnya maka otomatis dianggap 12 bulan.
-		LocalDate currentDate = LocalDate.now();
-		
-		int monthWorkingInYear;
-        if (currentDate.getYear() == dateJoined.getYear()) {
-            monthWorkingInYear = currentDate.getMonthValue() - dateJoined.getMonthValue();
-        } else {
-            monthWorkingInYear = 12;
-        }
 
-        return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, spouseIdNumber.equals(""), childIdNumbers.size());
+	public int getAnnualIncomeTax() {
+        int monthWorkingInYear = LocalDate.now().getYear() == dateJoined.getYear() ? LocalDate.now().getMonthValue() - dateJoined.getMonthValue() : 12;
+        return TaxFunction.calculateTax(monthlySalary, otherMonthlyIncome, monthWorkingInYear, annualDeductible, isSpouseEligibleForDeduction(), childIdNumbers.size());
+    }
+
+    private boolean isSpouseEligibleForDeduction() {
+        return spouseIdNumber.equals("");
     }
 }
